@@ -1,4 +1,4 @@
-# nums_to_words
+# fun
 
 DESCRIPTION
 ------------
