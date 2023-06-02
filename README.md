@@ -1,6 +1,6 @@
 # nums_to_words
 
-Description
+DESCRIPTION
 ------------
 This file implements a simple algorithm that translates numbers to words. It's made for fun use primarily. However, it clearly shows how Python makes it simple to implement most algorithms, formulas, or research findings due to its explicitness, simplicity, and readability.
 
