@@ -1,4 +1,4 @@
-# fun
+# ForFun
 
 DESCRIPTION
 ------------
