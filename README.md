@@ -2,7 +2,7 @@
 
 DESCRIPTION
 ------------
-This file implements a simple algorithm that translates numbers to words. 
+This simple file implements a simple algorithm that translates numbers to words. 
 
 
 EXAMPLES:
