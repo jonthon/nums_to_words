@@ -59,88 +59,37 @@ class Num:
         self.groups   = groups
         self.negative = negative
 
-    def digits(self):
-        """
-        returns number of digits and maximum value.
-        """
-        return len(str(self.num))
-
-    def group_words(self):
-        # string version could be a lot lot simpler
-        digits      = self.digits()
-        power       = self.base ** (digits - 1)
-        num         = abs(self.num)
-        group_words = []
-        all_words   = []
-
-        def traverse():                         # reuse
-            nonlocal num, power, digits
-            num    %= power
-            power //= self.base
-            digits -= 1
-
-        def group_digit():                      # reuse
-            return (digits % 3), (num // power)
-
-        def new_group():                        # reuse
-            nonlocal group_words
-            all_words.append(group_words)
-            group_words = []
-
-        if not num: return [ONES[num]]
-        while digits:                           
-            group, digit = group_digit()
-
-            # hundreds
-            if group == 0 and digit:
-                group_words.append(ONES[digit])
-                group_words.append(GROUPS[0])         # repeating hundred => 0
-
-            # tens
-            elif group == 2 and digit:
-                # twenty, thirty, forty, ...etc
-                if   digit > 1: group_words.append(TENS[digit])
-                # eleven, twelve, thirteen, ...etc
-                elif digit == 1:
-                    traverse()
-                    group, digit = group_digit()
-                    group_words.append(TEENS[self.base + digit])
-                    new_group()
-
-            # ones
-            elif group == 1:
-                if digit: group_words.append(ONES[digit])
-                new_group()
-            traverse()
-            
-        # append groups and save in instance namespace 
-        all_words.reverse()
-        for group, word in enumerate(all_words):
-            if word:
-                if group: word.append(self.groups[group])
-            all_words[group] = ' '.join(word)
-        all_words.reverse()
-        return all_words
-
-    def words(self):
-        # customizable for other str processing
-        # ie. adding commas, 'and', 'negative', etc.
-        words = self.group_words()
-        if self.num < 0: words.insert(0, self.negative)
-        return ' '.join(filter(lambda i: bool(i), words))
-
-class CustomNum(Num):
-    def digits(self):
-        digit = 0
-        num   = abs(self.num)
-        if not num: return 1, 1
+    def to_words(self):
+        if int(self.num) == 0: return ONES[0]
+        def pop(group):
+            for _ in range(3):
+                try:  yield (group.pop())
+                except IndexError: yield (None)
+        num = list(map(int, str(self.num)))
+        GRP, WORDS  = 0, []
         while num:
-            digit += 1
-            num  //= self.base
-        return digit
+            word,  words       = None, []
+            group, num         = num[-3::], num[:-3:]
+            ones,  tens, hunds = pop(group)
+            if hunds: 
+                word = ONES[hunds]
+                words.append(word)
+                words.append(GROUPS[0])
+            if tens:
+                if not (tens == 1): word = TENS[tens] 
+                else: word = TEENS[tens * self.base + ones]
+                words.append(word) 
+            if ones and not (tens == 1): 
+                word = ONES[ones]
+                words.append(word)    
+            if len(str(self.num)) > 3 and words and GRP: 
+                words.append(GROUPS[GRP])
+            WORDS = words + WORDS
+            GRP  += 1
+        return WORDS
 
-   
 if __name__ == '__main__':
-    num  = int(input('enter number in decimal: '))
-    print(Num(num).words())
+    while True:
+        num  = int(input('enter number in decimal: '))
+        print(Num(num).to_words())
     
