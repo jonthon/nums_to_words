@@ -60,7 +60,7 @@ class Num:
         self.negative = negative
 
     def to_words(self):
-        if int(self.num) == 0: return ONES[0]
+        if int(self.num) == 0: return self.ones[0]
         def pop(group):
             for _ in range(3):
                 try:  yield (group.pop())
@@ -72,18 +72,18 @@ class Num:
             group, num         = num[-3::], num[:-3:]
             ones,  tens, hunds = pop(group)
             if hunds: 
-                word = ONES[hunds]
+                word = self.ones[hunds]
                 words.append(word)
-                words.append(GROUPS[0])
+                words.append(self.groups[0])
             if tens:
-                if not (tens == 1): word = TENS[tens] 
-                else: word = TEENS[tens * self.base + ones]
+                if not (tens == 1): word = self.tens[tens] 
+                else: word = self.teens[tens * self.base + ones]
                 words.append(word) 
             if ones and not (tens == 1): 
-                word = ONES[ones]
+                word = self.ones[ones]
                 words.append(word)    
             if len(str(self.num)) > 3 and words and GRP: 
-                words.append(GROUPS[GRP])
+                words.append(self.groups[GRP])
             WORDS = words + WORDS
             GRP  += 1
         return WORDS
