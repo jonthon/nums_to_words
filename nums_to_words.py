@@ -86,7 +86,7 @@ class Num:
                 words.append(self.groups[GRP])
             WORDS = words + WORDS
             GRP  += 1
-        return WORDS
+        return ' '.join(WORDS)
 
 if __name__ == '__main__':
     while True:
