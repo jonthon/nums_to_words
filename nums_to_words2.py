@@ -52,6 +52,7 @@ GROUPS = ['hundred',
           'quintillion',]
 
 def digitalize(group):
+    'splits group into hunds, tens, ones digits'
     if len(group) == 3:
         hunds = group[-3]
         tens  = group[-2]
@@ -66,40 +67,55 @@ def digitalize(group):
         ones  = group[-1]
     return hunds, tens, ones
 
+def name_digits(group, ONES, TEENS, TENS):
+    'splits num to hunds, tens, ones digits and names them'
+    teens = group[-2:]
+    teens = TEENS.get(int(teens), '')
+    group = list(map(int, group))
+    hunds, tens, ones = digitalize(group)
+    hunds = ONES[hunds]
+    tens  = TENS[tens] if not teens else teens
+    ones  = ONES[ones] if not teens else ''
+    return [hunds, tens, ones]
+
+def insert_hundreds(group, hunds_name):
+    'inserts hunds name to named digits in group'
+    hunds = group[0]
+    if hunds: group.insert(1, hunds_name)
+    return group
+
+def name_group(group, group_name, GROUPS):
+    'names the whole group, i.e thousand, million, etc'
+    group = insert_hundreds(group, GROUPS[0])
+    if group_name and any(group): 
+        group.append(GROUPS[group_name])
+    return group
+
 def to_words(num, *, ZERO=ZERO, ONES=ONES, TEENS=TEENS, TENS=TENS, 
                      GROUPS=GROUPS, NEGATIVE='negative'):
     num   = int(num)
     neg   = num < 0
-    num   = abs(num)
-    if num == 0: return [ZERO]
-    num   = str(num)
+    num   = str(num)[1:] if neg else str(num)
     words = []
-    group_num = 0
+    group_name = 0 # index to GROUPS names mapper
     # start loop
+    if int(num) == 0: return [ZERO]
     while num:
         group = num[-3:]
-        teens = group[-2:]
-        teens = TEENS.get(int(teens), '')
-        group = list(map(int, group))
-        hunds, tens, ones = digitalize(group)
-        hunds = ONES[hunds]
-        tens  = TENS[tens] if not teens else teens
-        ones  = ONES[ones] if not teens else ''
-        group = [hunds, tens, ones]
-        if hunds: 
-            group.insert(1, GROUPS[0])
-        if group_num and any([hunds, tens, ones]): 
-            group.append(GROUPS[group_num])
+        group = name_digits(group, ONES, TEENS, TENS)
+        group = name_group(group, group_name, GROUPS)
         words = group + words
         num   = num[:-3]
-        group_num += 1
+        group_name += 1
     # end loop
     else:
         if neg: words = [NEGATIVE] + words
     return words
-while True: 
-    words = to_words(input('enter an integer: '))
-    words = ' '.join(words)
-    words = words.split()
-    words = ' '.join(words)
-    print(words)
+
+if __name__ == '__main__':
+    while True: 
+        words = to_words(input('enter an integer: '))
+        words = ' '.join(words)
+        words = words.split()
+        words = ' '.join(words)
+        print(words)
