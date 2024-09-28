@@ -84,11 +84,11 @@ def insert_hundreds(group, hunds_name):
     if hunds: group.insert(1, hunds_name)
     return group
 
-def name_group(group, group_name, GROUPS):
+def name_group(group, name_index, GROUPS):
     'names the whole group, i.e thousand, million, etc'
     group = insert_hundreds(group, GROUPS[0])
-    if group_name and any(group): 
-        group.append(GROUPS[group_name])
+    if name_index and any(group): 
+        group.append(GROUPS[name_index])
     return group
 
 def to_words(num, *, ZERO=ZERO, ONES=ONES, TEENS=TEENS, TENS=TENS, 
