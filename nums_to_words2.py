@@ -79,7 +79,7 @@ def name_digits(group, ONES, TEENS, TENS):
     return [hunds, tens, ones]
 
 def insert_hundreds(group, hunds_name):
-    'inserts hundreds name to named digits in group'
+    'inserts hundreds name between already named digits in group'
     hunds = group[0]
     if hunds: group.insert(1, hunds_name)
     return group
